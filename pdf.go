@@ -6,7 +6,7 @@ import (
 	"io"
 	"log"
 
-	"github.com/skirrund/gopdf/font"
+	"github.com/skirrund/go-pdf/font"
 
 	"os"
 

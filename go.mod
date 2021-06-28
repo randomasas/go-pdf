@@ -1,4 +1,4 @@
-module github.com/skirrund/gopdf
+module github.com/skirrund/go-pdf
 
 go 1.16
 
