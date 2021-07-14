@@ -51,7 +51,6 @@ func AddKeywords(locations []*PDFSearchLocation, templateFile string, saveasFile
 		}
 	}()
 	pdf := &gopdf.GoPdf{}
-	pdf.SetCompressLevel(-1)
 	pdf.Start(gopdf.Config{PageSize: *gopdf.PageSizeA4})
 	if fontBytes == nil || len(fontBytes) == 0 {
 		return errors.New("[PDF] can not find font file")
