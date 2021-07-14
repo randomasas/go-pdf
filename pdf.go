@@ -2,11 +2,12 @@ package gopdf
 
 import (
 	"bytes"
+	_ "embed"
 	"errors"
 	"io"
 	"log"
 
-	"github.com/skirrund/go-pdf/font"
+	//	"github.com/skirrund/go-pdf/font"
 
 	"os"
 
@@ -14,17 +15,18 @@ import (
 	"github.com/signintech/gopdf"
 )
 
+//go:embed font/font.ttf
 var fontBytes []byte
 
 func init() {
-	var err error
-	fontBytes, err = font.Asset("font/font.ttf")
-	d, _ := os.Getwd()
+	// var err error
+	// fontBytes, err = font.Asset("font/font.ttf")
+	// d, _ := os.Getwd()
 
-	//fontBytes, err = os.ReadFile(d + "/font/font.ttf")
-	if err != nil {
-		log.Println("[PDF] can not find font:" + d + "/font/font.ttf")
-	}
+	// //fontBytes, err = os.ReadFile(d + "/font/font.ttf")
+	// if err != nil {
+	// 	log.Println("[PDF] can not find font:" + d + "/font/font.ttf")
+	// }
 }
 
 func readTempFile(templateFile string) (*io.ReadSeeker, error) {
