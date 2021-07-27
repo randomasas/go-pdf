@@ -200,5 +200,7 @@ func AddKeywordsBytes(locations []*PDFSearchLocation, templateFile []byte) (bs [
 	if err != nil {
 		return templateFile, nil
 	}
-	return buffer.Bytes(), nil
+	bs = make([]byte, buffer.Len())
+	buffer.Read(bs)
+	return bs, nil
 }
