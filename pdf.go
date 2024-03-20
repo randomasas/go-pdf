@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"io"
-	"log"
+	"log/slog"
 	"sync"
 
 	"github.com/skirrund/go-pdf/font"
@@ -39,7 +39,7 @@ func init() {
 
 	//fontBytes, err = os.ReadFile(d + "/font/font.ttf")
 	if err != nil {
-		log.Println("[PDF] can not find font:" + d + "/font/font.ttf")
+		slog.Error("[PDF] can not find font:" + d + "/font/font.ttf")
 	}
 }
 
@@ -72,12 +72,12 @@ func readTempFileBytes(templateFile []byte) (*io.ReadSeeker, error) {
 func AddKeywords(locations []*PDFSearchLocation, templateFile string, saveasFilepath string) (err error) {
 	defer func() {
 		if err := recover(); err != nil {
-			log.Println("[PDF] recover :", err)
+			slog.Error("[PDF] recover :", err)
 		}
 	}()
 	pdf := &gopdf.GoPdf{}
 	pdf.Start(gopdf.Config{PageSize: *gopdf.PageSizeA4})
-	if fontBytes == nil || len(fontBytes) == 0 {
+	if len(fontBytes) == 0 {
 		return errors.New("[PDF] can not find font file")
 	}
 	err = pdf.AddTTFFontByReader("song", bytes.NewReader(fontBytes))
@@ -128,11 +128,11 @@ func AddKeywords(locations []*PDFSearchLocation, templateFile string, saveasFile
 	}
 
 	outFile, err := os.Create(saveasFilepath)
-	defer outFile.Close()
 	if err != nil {
 		//logger.Logger.Error("[PDF] Create saveasFilepath error", err)
 		return err
 	}
+	defer outFile.Close()
 	err = pdf.Write(outFile)
 	return err
 }
@@ -140,12 +140,12 @@ func AddKeywords(locations []*PDFSearchLocation, templateFile string, saveasFile
 func AddKeywordsBytes(locations []*PDFSearchLocation, templateFile []byte) (bs []byte, err error) {
 	defer func() {
 		if err := recover(); err != nil {
-			log.Println("[PDF] recover :", err)
+			slog.Error("[PDF] recover :", err)
 		}
 	}()
 	pdf := &gopdf.GoPdf{}
 	pdf.Start(gopdf.Config{PageSize: *gopdf.PageSizeA4})
-	if fontBytes == nil || len(fontBytes) == 0 {
+	if len(fontBytes) == 0 {
 		return templateFile, errors.New("[PDF] can not find font file")
 	}
 	err = pdf.AddTTFFontByReader("song", bytes.NewReader(fontBytes))

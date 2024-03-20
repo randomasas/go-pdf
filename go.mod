@@ -1,6 +1,6 @@
 module github.com/skirrund/go-pdf
 
-go 1.18
+go 1.22
 
 require (
 	github.com/phpdave11/gofpdi v1.0.13
