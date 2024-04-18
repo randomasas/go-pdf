@@ -1,9 +1,7 @@
 package gopdf
 
 import (
-	"io/fs"
 	"log/slog"
-	"os"
 	"testing"
 )
 
@@ -22,74 +20,75 @@ func TestAddKeywords(t *testing.T) {
 	ls := []*PDFSearchLocation{
 		&PDFSearchLocation{
 			Page:     2,
-			AddText:  "测试",
-			AbsX:     100,
-			AbsY:     585,
-			FontSize: 10,
+			AddText:  "姓名",
+			AbsX:     180,
+			AbsY:     580,
+			FontSize: 12,
 		},
 		&PDFSearchLocation{
 			Page:     2,
 			AddText:  "男",
-			AbsX:     220,
-			AbsY:     585,
-			FontSize: 10,
+			AbsX:     430,
+			AbsY:     580,
+			FontSize: 12,
 		},
 		&PDFSearchLocation{
 			Page:     2,
 			AddText:  "31000000000",
-			AbsX:     100,
-			AbsY:     542,
-			FontSize: 10,
+			AbsX:     180,
+			AbsY:     535,
+			FontSize: 12,
 		},
 		&PDFSearchLocation{
 			Page:     2,
 			AddText:  "2023",
-			AbsX:     79,
-			AbsY:     409,
-			FontSize: 10,
+			AbsX:     166,
+			AbsY:     400,
+			FontSize: 12,
 		},
 		&PDFSearchLocation{
 			Page:     2,
 			AddText:  "02",
-			AbsX:     105,
-			AbsY:     409,
-			FontSize: 10,
+			AbsX:     220,
+			AbsY:     400,
+			FontSize: 12,
 		},
 		&PDFSearchLocation{
 			Page:     2,
 			AddText:  "31",
-			AbsX:     124,
-			AbsY:     409,
-			FontSize: 10,
+			AbsX:     254,
+			AbsY:     400,
+			FontSize: 12,
 		},
 		&PDFSearchLocation{
 			Page:     2,
 			AddText:  "13321954022",
-			AbsX:     100,
-			AbsY:     499,
-			FontSize: 10,
+			AbsX:     180,
+			AbsY:     490,
+			FontSize: 12,
 		},
 		&PDFSearchLocation{
 			Page:     2,
 			AddText:  "方案名称",
-			AbsX:     100,
-			AbsY:     454,
-			FontSize: 10,
+			AbsX:     180,
+			AbsY:     444,
+			FontSize: 12,
 		},
 	}
 	t.Log(">>>>>>>>>>>")
-	b, err := os.ReadFile("/Users/jerry.shi/Desktop/简版-特药服务（海内外）权益服务手册.pdf")
-	if err != nil {
-		t.Log("<<<<<<<<<<<<<<<", err)
-	}
+	// b, err := os.ReadFile("/Users/jerry.shi/Desktop/240_s.pdf")
+	// if err != nil {
+	// 	t.Log("<<<<<<<<<<<<<<<", err)
+	// }
 
-	b, err = AddKeywordsBytes(ls, b)
+	//b, err = AddKeywordsBytes(ls, b, true)
+	err := AddKeywords(ls, "/Users/jerry.shi/Desktop/240_s.pdf", "/Users/jerry.shi/Desktop/test_s.pdf", true)
 	if err != nil {
 		t.Error(">>>>>>>>>>>", err)
 	}
-	err = os.WriteFile("/Users/jerry.shi/Desktop/test_s.pdf", b, fs.ModePerm)
-	if err != nil {
-		t.Error(">>>>>>>>>>>", err)
-	}
+	// err = os.WriteFile("/Users/jerry.shi/Desktop/test_s.pdf", b, fs.ModePerm)
+	// if err != nil {
+	// 	t.Error(">>>>>>>>>>>", err)
+	// }
 	t.Log("end")
 }

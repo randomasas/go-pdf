@@ -69,7 +69,7 @@ func readTempFileBytes(templateFile []byte) (*io.ReadSeeker, error) {
 	return &rd, nil
 }
 
-func AddKeywords(locations []*PDFSearchLocation, templateFile string, saveasFilepath string) (err error) {
+func AddKeywords(locations []*PDFSearchLocation, templateFile string, saveasFilepath string, useTempPageSize bool) (err error) {
 	defer func() {
 		if err := recover(); err != nil {
 			slog.Error("[PDF] recover :", err)
@@ -94,10 +94,19 @@ func AddKeywords(locations []*PDFSearchLocation, templateFile string, saveasFile
 	importer := gofpdi.NewImporter()
 	importer.SetSourceStream(rd)
 	num := importer.GetNumPages()
+	pageSizes := importer.GetPageSizes()
 	for i := 1; i <= num; i++ {
-		pdf.AddPage()
-		tpl := pdf.ImportPageStream(rd, i, "/MediaBox")
-		pdf.UseImportedTemplate(tpl, 0, 0, float64(gopdf.PageSizeA4.W), float64(gopdf.PageSizeA4.H))
+		if useTempPageSize {
+			tempW := pageSizes[i]["/MediaBox"]["w"]
+			tempH := pageSizes[i]["/MediaBox"]["h"]
+			pdf.AddPageWithOption(gopdf.PageOption{PageSize: &gopdf.Rect{W: tempW, H: tempH}})
+			tpl := pdf.ImportPageStream(rd, i, "/MediaBox")
+			pdf.UseImportedTemplate(tpl, 0, 0, tempW, tempH)
+		} else {
+			pdf.AddPage()
+			tpl := pdf.ImportPageStream(rd, i, "/MediaBox")
+			pdf.UseImportedTemplate(tpl, 0, 0, float64(gopdf.PageSizeA4.W), float64(gopdf.PageSizeA4.H))
+		}
 		for _, sl := range locations {
 			if sl.Page <= 0 {
 				sl.Page = 1
@@ -137,7 +146,7 @@ func AddKeywords(locations []*PDFSearchLocation, templateFile string, saveasFile
 	return err
 }
 
-func AddKeywordsBytes(locations []*PDFSearchLocation, templateFile []byte) (bs []byte, err error) {
+func AddKeywordsBytes(locations []*PDFSearchLocation, templateFile []byte, useTempPageSize bool) (bs []byte, err error) {
 	defer func() {
 		if err := recover(); err != nil {
 			slog.Error("[PDF] recover :", err)
@@ -162,10 +171,19 @@ func AddKeywordsBytes(locations []*PDFSearchLocation, templateFile []byte) (bs [
 	importer := gofpdi.NewImporter()
 	importer.SetSourceStream(rd)
 	num := importer.GetNumPages()
+	pageSizes := importer.GetPageSizes()
 	for i := 1; i <= num; i++ {
-		pdf.AddPage()
-		tpl := pdf.ImportPageStream(rd, i, "/MediaBox")
-		pdf.UseImportedTemplate(tpl, 0, 0, float64(gopdf.PageSizeA4.W), float64(gopdf.PageSizeA4.H))
+		if useTempPageSize {
+			tempW := pageSizes[i]["/MediaBox"]["w"]
+			tempH := pageSizes[i]["/MediaBox"]["h"]
+			pdf.AddPageWithOption(gopdf.PageOption{PageSize: &gopdf.Rect{W: tempW, H: tempH}})
+			tpl := pdf.ImportPageStream(rd, i, "/MediaBox")
+			pdf.UseImportedTemplate(tpl, 0, 0, tempW, tempH)
+		} else {
+			pdf.AddPage()
+			tpl := pdf.ImportPageStream(rd, i, "/MediaBox")
+			pdf.UseImportedTemplate(tpl, 0, 0, float64(gopdf.PageSizeA4.W), float64(gopdf.PageSizeA4.H))
+		}
 		for _, sl := range locations {
 			if sl.Page <= 0 {
 				sl.Page = 1
