@@ -1,7 +1,9 @@
 package gopdf
 
 import (
+	"io/fs"
 	"log/slog"
+	"os"
 	"testing"
 )
 
@@ -73,22 +75,33 @@ func TestAddKeywords(t *testing.T) {
 			AbsX:     180,
 			AbsY:     444,
 			FontSize: 12,
+			Image: &Image{
+				Url:    "/Users/jerry.shi/Desktop/多少天海报_03.png",
+				Width:  100,
+				Height: 50,
+			},
 		},
 	}
-	t.Log(">>>>>>>>>>>")
-	// b, err := os.ReadFile("/Users/jerry.shi/Desktop/240_s.pdf")
+	// bs, err := os.ReadFile("/Users/jerry.shi/Desktop/多少天海报_03.png")
 	// if err != nil {
 	// 	t.Log("<<<<<<<<<<<<<<<", err)
 	// }
+	// str := base64.StdEncoding.EncodeToString(bs)
+	ls[len(ls)-1].Image = nil
 
-	//b, err = AddKeywordsBytes(ls, b, true)
-	err := AddKeywords(ls, "/Users/jerry.shi/Desktop/240_s.pdf", "/Users/jerry.shi/Desktop/test_s.pdf", true)
+	b, err := os.ReadFile("/Users/jerry.shi/Desktop/240_s.pdf")
+	if err != nil {
+		t.Log("<<<<<<<<<<<<<<<", err)
+	}
+
+	b, err = AddKeywordsBytes(ls, b, true)
+	// err := AddKeywords(ls, "/Users/jerry.shi/Desktop/240_s.pdf", "/Users/jerry.shi/Desktop/test_s.pdf", true)
 	if err != nil {
 		t.Error(">>>>>>>>>>>", err)
 	}
-	// err = os.WriteFile("/Users/jerry.shi/Desktop/test_s.pdf", b, fs.ModePerm)
-	// if err != nil {
-	// 	t.Error(">>>>>>>>>>>", err)
-	// }
+	err = os.WriteFile("/Users/jerry.shi/Desktop/test_s.pdf", b, fs.ModePerm)
+	if err != nil {
+		t.Error(">>>>>>>>>>>", err)
+	}
 	t.Log("end")
 }

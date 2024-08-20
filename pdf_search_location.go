@@ -9,6 +9,15 @@ type PDFSearchLocation struct {
 	RelativeY float64   `json:"relativeY"`
 	FontSize  float64   `json:"fontSize"`
 	BaseColor BaseColor `json:"baseColor"`
+	Image     *Image    `json:"image"`
+}
+
+type Image struct {
+	FilePath string  `json:"filePath,omitempty"`
+	Url      string  `json:"url,omitempty"`
+	Base64   string  `json:"base64,omitempty"`
+	Width    float64 `json:"width,omitempty"`
+	Height   float64 `json:"height,omitempty"`
 }
 
 type BaseColor struct {
