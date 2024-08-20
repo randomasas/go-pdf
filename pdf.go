@@ -9,11 +9,10 @@ import (
 	"sync"
 
 	"github.com/skirrund/go-pdf/font"
+	"github.com/skirrund/go-pdf/gopdffork"
+	"github.com/skirrund/go-pdf/pdfimporter"
 
 	"os"
-
-	"github.com/phpdave11/gofpdi"
-	"github.com/signintech/gopdf"
 )
 
 var fontBytes []byte
@@ -116,14 +115,14 @@ func AddKeywordsBytes(locations []*PDFSearchLocation, templateFile []byte, useTe
 	// return bs, nil
 }
 
-func doAddKeywordsBytes(locations []*PDFSearchLocation, templateFile []byte, useTempPageSize bool) (gp *gopdf.GoPdf, err error) {
+func doAddKeywordsBytes(locations []*PDFSearchLocation, templateFile []byte, useTempPageSize bool) (gp *gopdffork.GoPdf, err error) {
 	defer func() {
 		if err := recover(); err != nil {
 			slog.Error("[PDF] recover :", err)
 		}
 	}()
-	pdf := &gopdf.GoPdf{}
-	pdf.Start(gopdf.Config{PageSize: *gopdf.PageSizeA4})
+	pdf := &gopdffork.GoPdf{}
+	pdf.Start(gopdffork.Config{PageSize: *gopdffork.PageSizeA4})
 	if len(fontBytes) == 0 {
 		return nil, errors.New("[PDF] can not find font file")
 	}
@@ -138,17 +137,17 @@ func doAddKeywordsBytes(locations []*PDFSearchLocation, templateFile []byte, use
 		return nil, err
 	}
 
-	importer := gofpdi.NewImporter()
+	importer := pdfimporter.NewImporter()
 	importer.SetSourceStream(rd)
 	num := importer.GetNumPages()
 	pageSizes := importer.GetPageSizes()
 	for i := 1; i <= num; i++ {
-		tempW := gopdf.PageSizeA4.W
-		tempH := gopdf.PageSizeA4.H
+		tempW := gopdffork.PageSizeA4.W
+		tempH := gopdffork.PageSizeA4.H
 		if useTempPageSize {
 			tempW = pageSizes[i]["/MediaBox"]["w"]
 			tempH = pageSizes[i]["/MediaBox"]["h"]
-			pdf.AddPageWithOption(gopdf.PageOption{PageSize: &gopdf.Rect{W: tempW, H: tempH}})
+			pdf.AddPageWithOption(gopdffork.PageOption{PageSize: &gopdffork.Rect{W: tempW, H: tempH}})
 			tpl := pdf.ImportPageStream(rd, i, "/MediaBox")
 			pdf.UseImportedTemplate(tpl, 0, 0, tempW, tempH)
 		} else {
@@ -163,13 +162,13 @@ func doAddKeywordsBytes(locations []*PDFSearchLocation, templateFile []byte, use
 			if sl.Page == i {
 				img := sl.Image
 				if img != nil {
-					var rect *gopdf.Rect
+					var rect *gopdffork.Rect
 					if img.Width > 0 && img.Height > 0 {
-						rect = &gopdf.Rect{W: img.Width, H: img.Height}
+						rect = &gopdffork.Rect{W: img.Width, H: img.Height}
 					}
-					var imgHolder gopdf.ImageHolder
+					var imgHolder gopdffork.ImageHolder
 					if len(img.FilePath) > 0 {
-						imgHolder, err = gopdf.ImageHolderByPath(img.FilePath)
+						imgHolder, err = gopdffork.ImageHolderByPath(img.FilePath)
 					}
 					if len(img.Base64) > 0 {
 						var bs []byte
@@ -177,7 +176,7 @@ func doAddKeywordsBytes(locations []*PDFSearchLocation, templateFile []byte, use
 						if err != nil {
 							return nil, err
 						}
-						imgHolder, err = gopdf.ImageHolderByBytes(bs)
+						imgHolder, err = gopdffork.ImageHolderByBytes(bs)
 					}
 					if err != nil {
 						return nil, err
@@ -203,7 +202,7 @@ func doAddKeywordsBytes(locations []*PDFSearchLocation, templateFile []byte, use
 				if sl.BaseColor.Alpha == 0 {
 					sl.BaseColor.Alpha = 1
 				}
-				pdf.SetTransparency(gopdf.Transparency{
+				pdf.SetTransparency(gopdffork.Transparency{
 					Alpha: sl.BaseColor.Alpha,
 				})
 
